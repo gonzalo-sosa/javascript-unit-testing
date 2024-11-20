@@ -10,7 +10,7 @@ Dependiendo del proyecto se aplicarán más tipos de pruebas que otros pero no r
 
 ### Unitarios
 
-Pruebas a componentes aislados como módulos, clases, funciones, étc. Se trata de probar sólo una parte del proyecto. Este tipo de pruebas ayuda a hallar rápidamente errores en las fases iniciales del proyecto.
+Pruebas a componentes aislados como módulos, clases, funciones, etc. Se trata de probar sólo una parte del proyecto. Este tipo de pruebas ayuda a hallar rápidamente errores en las fases iniciales del proyecto.
 
 ### Integration
 
@@ -107,3 +107,85 @@ Cobertura del código en producción con código de pruebas. Gracias al paquete 
   - No dependen de datos random
   - No dependen de la fecha o tiempo actual
   - No dependen de un estado global
+
+## Positive Testing
+
+Asegura que la aplicación funcione en condiciones normales.
+
+## Negative Testing
+
+Chequea como de bien se desenvuelve la aplicación en condiciones anormales, inesperadas o en las que el usuario ingresa datos incorrectos.
+
+## Boundary Testing
+
+Probar los límites, es decir, el foco de las pruebas son los casos límites de los valores ingresados, por ejemplo: para un valor que debe estar contenido en un rango de 0 a 10 los valores a probar son {-1, 0, 10, 11}.
+
+## Parameterized test or data driven tests
+
+Es una forma de ejecutar las misma prueba multiples veces con diferentes conjuntos de datos ingresados.
+
+## Mock Functions
+
+Son funciones que imitan el comportamiento de una función real.
+
+Se utilizan para:
+
+- Para proveer valores
+- Para probar la interacción entre módulos
+
+## Spying functions
+
+Monitorear el comportamiento de funciones durante la ejecución de las pruebas.
+
+## Clearing Mocks
+
+Los mocks quedan almacenados luego de cada ejecución de las pruebas por lo que es necesario limpiarlos o borrarlos para que no interfieran con otras pruebas.
+
+- mockClear(): limpia toda la información
+- mockReset(): limpia toda la información y la implementación a una función vacía
+- mockRestore(): restaura la implementación original
+
+## Uso de Mocks
+
+Los mocks son de gran ayuda para separar la integración entre módulos y permitir probarlos por separado pero no son siempre la mejor solución para probar funciones debido a que en las pruebas en donde se utilicen los mocks se debe de conocer la implementación, las llamadas a funciones y sus argumentos, son pruebas de caja blanca. Por lo tanto, los mocks sólo deben de ser utilizados cuando se prueban llamadas a servicios externos como una base de datos, apis, etc.
+
+## Static Analysis Tools
+
+Herramientas que analizan código sin ejecutarlo, ayudan a encontrar errores de forma temprana.
+
+Beneficios
+
+- Encuentran errores en el fase temprana del desarrollo
+- Fuerzan que se utilicen estándares y buenas prácticas al momento de escribir código
+- Mejoran la calidad del código
+- Aseguran la consistencia de la calidad del código para todo el equipo de desarrollo
+
+### Prettier
+
+Code formatting tool
+
+- Estilo de código consistente
+- Código legible
+- Reduce debates acerca del formato del código
+
+### Eslint
+
+Code quality checker for Javascript
+
+- Alerta sobre errores de código comunes
+- Fuerza que el código escrito siga los estándares y las buenas prácticas
+- Mejora la consistencia del código y su legibilidad
+- Facilita la colaboración con otras personas en equipos
+
+### Typescript
+
+A statically-typed superset of javascript
+
+- Atrapa errores con los tipos de datos en tiempo de compilación
+- Mejora la documentación del código
+- De las mejores herramientas para refactorizar
+- Estructura fuerte con pocos errores en tiempo de ejecución
+
+### Husky
+
+Git hooks automation
