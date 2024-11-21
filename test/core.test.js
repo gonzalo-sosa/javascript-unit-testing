@@ -15,17 +15,17 @@ describe('getCoupons', () => {
   it('should return an array of coupons not empty', () => {
     const coupons = getCoupons();
 
-    expect(Array.isArray(coupons)).toBeTruthy();
+    expect(Array.isArray(coupons)).toBeTruthy(); // toBe(true)
     expect(coupons.length).toBeGreaterThan(0);
   });
 
-  it('should return an array of objects with valid  code', () => {
+  it('should return an array of objects with valid code', () => {
     const coupons = getCoupons();
 
     coupons.forEach((c) => {
       expect(c).toHaveProperty('code');
       expect(typeof c.code).toBe('string');
-      expect(c.code).toBeTruthy(); // para string vacíos
+      expect(c.code).toBeTruthy(); // para string vacíos ""
     });
   });
 
@@ -76,7 +76,7 @@ describe('validateUserInput', () => {
   });
 
   it('should return an error if username is less than 3 characters', () => {
-    expect(validateUserInput('mo', 18)).toMatch(/invalid/i);
+    expect(validateUserInput('A'.repeat(2), 18)).toMatch(/invalid/i);
   });
 
   it('should return an error if username is longer than 255 characters', () => {
@@ -105,11 +105,7 @@ describe('isPriceInRange', () => {
   it.each([
     { scenario: 'price < min', price: 10, result: false },
     { scenario: 'price == min', price: 11, result: true },
-    {
-      scenario: 'price between min and max',
-      price: 11.5,
-      result: true,
-    },
+    { scenario: 'price between min and max', price: 11.5, result: true },
     { scenario: 'price == max', price: 12, result: true },
     { scenario: 'price > max', price: 13, result: false },
   ])('should return $result when $scenario', ({ price, result }) => {
