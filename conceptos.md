@@ -154,33 +154,33 @@ En Vitest se puede interactuar con estas fases gracias a las funciones beforeEac
 
 ```js
 // Equality
-toBe()
-toEqual()
+toBe();
+toEqual();
 
 // Truthiness
-toBeTruthy()
-toBeFalsy()
-toBeNull()
-toBeUndefined()
-toBeDefined()
+toBeTruthy();
+toBeFalsy();
+toBeNull();
+toBeUndefined();
+toBeDefined();
 
 // Numbers
-toBeGreaterThan()
-toBeGreaterThanOrEqualTo()
-toBeLessThan()
-toBeLessThanOrEqualTo()
-toBeCloseTo()
+toBeGreaterThan();
+toBeGreaterThanOrEqualTo();
+toBeLessThan();
+toBeLessThanOrEqualTo();
+toBeCloseTo();
 
 // Strings
-toMatch() // string o expresión regular
+toMatch(); // string o expresión regular
 
 // Objects
-toMatchObject()
-toHaveProperty()
+toMatchObject();
+toHaveProperty();
 
 // Arrays
-toContain()
-toHaveLength()
+toContain();
+toHaveLength();
 ```
 
 ### Ejemplos
@@ -190,7 +190,7 @@ toHaveLength()
 
 ## Mock Functions
 
-Son funciones que imitan el comportamiento de una función real, permiten que se controle tanto sus datos a retornar como su comportamiento/implementación durante las pruebas. 
+Son funciones que imitan el comportamiento de una función real, permiten que se controle tanto sus datos a retornar como su comportamiento/implementación durante las pruebas.
 
 Se utilizan para:
 
@@ -200,23 +200,43 @@ Se utilizan para:
 Ejemplo de mock en Vitest:
 
 ```js
-import { vi } from "vitest"
+import { vi } from 'vitest';
 
 describe('test', () => {
-  const fn = vi.fn();
-})
+  const greet = vi.fn();
+  greet.mockReturnValue('hello');
+  greet.mockResolvedValue('hello'); // para promesas -> resuelta
+  greet.mockRejectedValue('error'); // para promesas -> rechazada
+  greet.mockImplementation((name) => 'hello ' + name); // implementación
+
+  // Assertions
+  it('should called greet', () => {
+    greet();
+    expect(greet).toHaveBeenCalled();
+  });
+
+  it('should called greet', () => {
+    greet();
+    expect(greet).toHaveBeenCalledOnce();
+  });
+
+  it('should called greet with mosh', () => {
+    greet('mosh');
+    expect(greet).toHaveBeenCalledWith('mosh');
+  });
+});
 ```
 
-También se puede realizar el mock de todo un módulo con: 
+También se puede realizar el mock de todo un módulo con:
 
 ```js
-import { vi } from "vitest"
+import { vi } from 'vitest';
 
-vi.mock("../functions/fn.js")
+vi.mock('../src/currency');
 
 describe('test', () => {
-  //
-})
+  vi.mocked(mockedFunc).mockReturnValue(0);
+});
 ```
 
 ### Partial Mocking
@@ -234,8 +254,8 @@ vi.mock('../src/libs/email', async (importOriginal) => {
 });
 
 describe('test', () => {
-  //
-})
+  vi.mocked(sendEmail); // fn
+});
 ```
 
 ## Spying functions
@@ -249,6 +269,17 @@ Los mocks quedan almacenados luego de cada ejecución de las pruebas por lo que 
 - mockClear(): limpia toda la información
 - mockReset(): limpia toda la información y la implementación a una función vacía
 - mockRestore(): restaura la implementación original
+
+```js
+vi.mocked(mockedFunc).mockClear();
+vi.clearAllMocks();
+```
+
+## Mocking Dates
+
+```js
+vi.setSystemTime('2024-01-01 10:00');
+```
 
 ## Uso de Mocks
 
