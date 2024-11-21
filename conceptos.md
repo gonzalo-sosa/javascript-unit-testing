@@ -1,8 +1,11 @@
 # Testing
 
+El testing son las pruebas que se realizan a un software para asegurarse de que este cumple con los requisitos establecidos en el proyecto.
+Las pruebas son escritas en código que verifica si el software se comporta como se espera frente a distintos escenarios. Cuando son adecuadas, reducen significativamente el costo de recrear ciertas partes o módulos del software. De todas formas, si las pruebas no son realizadas correctamente, esto puede llevar a desarrollar código que no cumpla con los requisitos y conllevar a un costo elevado para solucionar los problemas generados.
+
 ## ¿Cuánto testing es necesario realizar?
 
-Las aplicaciones deben de ser probadas en algún punto,los puntos de vista de que el código no debe de ser probado o que el código debe ser probado en su totalidad son equivocados ya que cada proyecto es único y sus funcionalidades distintas, por lo que se debe de definir un grado de pruebas específico por proyecto. Es importante hallar el punto medio entre no realizar pruebas y probar todo el código debido a que no hacer pruebas lleva al proyecto a errores y costos superiores dependiendo de la etapa donde el error sea expuesto, y hacer probar todo el código es costoso por el tiempo que lleva escribir código de pruebas.
+Las aplicaciones deben de ser probadas en algún punto,los puntos de vista de que el código no debe de ser probado o que el código debe ser probado en su totalidad son equivocados ya que cada proyecto es único y sus funcionalidades son diferentes, por lo que se debe de definir un grado de pruebas específico por proyecto. Es importante hallar el punto medio entre no realizar pruebas y probar todo el código debido a que no hacer pruebas lleva al proyecto a errores acumulativos que se descubren de forma tardía y llevan a costos notables que incrementan dependiendo de la etapa donde el error sea expuesto.Por otra parte, probar todo el código escrito conlleva un costo por el tiempo dedicado a desarrollar código de pruebas robustas.
 
 ## Tipos de testing
 
@@ -12,9 +15,9 @@ Dependiendo del proyecto se aplicarán más tipos de pruebas que otros pero no r
 
 Pruebas a componentes aislados como módulos, clases, funciones, etc. Se trata de probar sólo una parte del proyecto. Este tipo de pruebas ayuda a hallar rápidamente errores en las fases iniciales del proyecto.
 
-### Integration
+### Integración
 
-Integra componentes o módulos para probarlos en conjunto, se prueba cómo los componentes anteriormente aislados trabajan en conjunto. Este tipo de pruebas son ideales para probar si el funcionamiento es el esperado al combinar distintos y comunicar módulos, y verificar si su compatibilidad es la adecuada.
+Integra componentes o módulos para probarlos en conjunto, se prueba cómo los componentes anteriormente aislados trabajan en conjunto. Este tipo de pruebas son ideales para probar si el funcionamiento al combinar distintos y comunicar módulos es el esperado, y verificar si la compatibilidad entre módulos es la adecuada.
 
 ### End to end
 
@@ -86,7 +89,25 @@ Y para ejecutarlo se agrega un comando al package json con las sentencias a ejec
 
 Cobertura del código en producción con código de pruebas. Gracias al paquete coverage de vitest se pueden observar métricas acerca de las pruebas de un proyecto, los módulos cubiertos por pruebas y las líneas de código que están siendo respaldadas por pruebas.
 
+## Ejemplos de pruebas
+
+```js
+import { describe, expect, it } from ‘vitest’;
+
+describe('max', () => {
+  it('should return the second argument when the first is lower', () => {
+    expect(max(1, 2)).toBe(2);
+  });
+
+  it('should return the first argument when they are equal', () => {
+    expect(max(1, 1)).toBe(1);
+  })
+});
+```
+
 ## Características de buenas pruebas unitarias
+
+Es preferible no escribir pruebas si estas son malas, las buenas pruebas son fáciles de mantener, son confiables y robustas.
 
 - Mantenibles:
   - Nombre claro
@@ -124,14 +145,98 @@ Probar los límites, es decir, el foco de las pruebas son los casos límites de 
 
 Es una forma de ejecutar las misma prueba multiples veces con diferentes conjuntos de datos ingresados.
 
+## Setup and teardown
+
+Son faces en las que se prepara el entorno inicial en el que se realizarán las pruebas. Setup se refiere a la fase anterior a realizar la prueba y teardown a la fase posterior a la prueba.
+En Vitest se puede interactuar con estas fases gracias a las funciones beforeEach y beforeAll para el Setup y, afterEach y afterAll para el teardown.
+
+## Common Matchers
+
+```js
+// Equality
+toBe()
+toEqual()
+
+// Truthiness
+toBeTruthy()
+toBeFalsy()
+toBeNull()
+toBeUndefined()
+toBeDefined()
+
+// Numbers
+toBeGreaterThan()
+toBeGreaterThanOrEqualTo()
+toBeLessThan()
+toBeLessThanOrEqualTo()
+toBeCloseTo()
+
+// Strings
+toMatch() // string o expresión regular
+
+// Objects
+toMatchObject()
+toHaveProperty()
+
+// Arrays
+toContain()
+toHaveLength()
+```
+
+### Ejemplos
+
+[Intro](./test/intro.test.js)
+[Core](./test/core.test.js)
+
 ## Mock Functions
 
-Son funciones que imitan el comportamiento de una función real.
+Son funciones que imitan el comportamiento de una función real, permiten que se controle tanto sus datos a retornar como su comportamiento/implementación durante las pruebas. 
 
 Se utilizan para:
 
 - Para proveer valores
 - Para probar la interacción entre módulos
+
+Ejemplo de mock en Vitest:
+
+```js
+import { vi } from "vitest"
+
+describe('test', () => {
+  const fn = vi.fn();
+})
+```
+
+También se puede realizar el mock de todo un módulo con: 
+
+```js
+import { vi } from "vitest"
+
+vi.mock("../functions/fn.js")
+
+describe('test', () => {
+  //
+})
+```
+
+### Partial Mocking
+
+Se realiza el mock a sólo una única parte de un módulo. Por defecto el mock se aplica a todo el módulo por lo que es necesario indicar cuales son las funciones que queremos que se incluyan en este proceso y excluir aquellas que no.
+
+```js
+vi.mock('../src/libs/email', async (importOriginal) => {
+  const originalModule = await importOriginal();
+
+  return {
+    ...originalModule, // todo el módulo
+    sendEmail: vi.fn(), // sólo la función sendEmail es reemplazada por un mock
+  };
+});
+
+describe('test', () => {
+  //
+})
+```
 
 ## Spying functions
 
@@ -148,6 +253,10 @@ Los mocks quedan almacenados luego de cada ejecución de las pruebas por lo que 
 ## Uso de Mocks
 
 Los mocks son de gran ayuda para separar la integración entre módulos y permitir probarlos por separado pero no son siempre la mejor solución para probar funciones debido a que en las pruebas en donde se utilicen los mocks se debe de conocer la implementación, las llamadas a funciones y sus argumentos, son pruebas de caja blanca. Por lo tanto, los mocks sólo deben de ser utilizados cuando se prueban llamadas a servicios externos como una base de datos, apis, etc.
+
+### Ejemplos
+
+[Mock](./test/mock.test.js)
 
 ## Static Analysis Tools
 
@@ -186,6 +295,13 @@ A statically-typed superset of javascript
 - De las mejores herramientas para refactorizar
 - Estructura fuerte con pocos errores en tiempo de ejecución
 
+Con typescript no es necesario validar el tipo de dato en las pruebas ya que lo realiza el compilador.
+
+[Test en typescript](./test/main.test.ts)
+
 ### Husky
 
 Git hooks automation
+
+[Comandos a ejecutar antes de commit](.husky/pre-commit)
+[Comando a ejecutar antes de push](.husky/pre-push)
