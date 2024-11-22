@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   calculateDiscount,
   canDrive,
+  createProduct,
   fetchData,
   getCoupons,
   isPriceInRange,
@@ -317,5 +318,42 @@ describe('stack', () => {
     stack.clear();
 
     expect(stack.size()).toBe(0);
+  });
+});
+
+describe('createProduct', () => {
+  it('should return error if given product not have name', () => {
+    const productWithoutName = { price: 10 };
+
+    const {
+      success,
+      error: { code, message },
+    } = createProduct(productWithoutName);
+
+    expect(success).toBe(false);
+    expect(code).toMatch(/invalid/i);
+    expect(message).toMatch(/missing/i);
+  });
+
+  it('should return error if given product not', () => {
+    const productWithoutName = { price: 10 };
+
+    const {
+      success,
+      error: { code, message },
+    } = createProduct(productWithoutName);
+
+    expect(success).toBe(false);
+    expect(code).toMatch(/invalid/i);
+    expect(message).toMatch(/missing/i);
+  });
+
+  it('should return success if given product is valid', () => {
+    const product = { name: 'p1', price: 10 };
+
+    const { success, message } = createProduct(product);
+
+    expect(success).toBe(true);
+    expect(message).toMatch(/success/i);
   });
 });
