@@ -132,13 +132,22 @@ export class Stack {
 
 // Additional exercises
 export function createProduct(product) {
+  // Añadido
+  if (!product) {
+    return {
+      success: false,
+      error: { code: 'invalid_product', message: 'Name and price are missing' },
+    };
+  }
+  //
+
   if (!product.name)
     return {
       success: false,
       error: { code: 'invalid_name', message: 'Name is missing' },
     };
 
-  if (product.price <= 0)
+  if (!product.price || product.price <= 0)
     return {
       success: false,
       error: { code: 'invalid_price', message: 'Price is missing' },

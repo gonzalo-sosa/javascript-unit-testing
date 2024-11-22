@@ -6,6 +6,7 @@ import {
   fetchData,
   getCoupons,
   isPriceInRange,
+  isStrongPassword,
   isValidUsername,
   Stack,
   validateUserInput,
@@ -318,6 +319,19 @@ describe('stack', () => {
 });
 
 describe('createProduct', () => {
+  it('should return error if given product is not valid', () => {
+    const {
+      success,
+      error: { code, message },
+    } = createProduct(null);
+
+    expect(success).toBe(false);
+    expect(code).toMatch(/invalid/i);
+    expect(message).toMatch(/name/i);
+    expect(message).toMatch(/price/i);
+    expect(message).toMatch(/missing/i);
+  });
+
   it('should return error if given product not have name', () => {
     const productWithoutName = { price: 10 };
 
@@ -331,8 +345,21 @@ describe('createProduct', () => {
     expect(message).toMatch(/missing/i);
   });
 
-  it('should return error if given product not', () => {
-    const productWithoutName = { price: 10 };
+  it('should return error if given product does not have price', () => {
+    const productWithoutPrice = { name: 'p1' };
+
+    const {
+      success,
+      error: { code, message },
+    } = createProduct(productWithoutPrice);
+
+    expect(success).toBe(false);
+    expect(code).toMatch(/invalid/i);
+    expect(message).toMatch(/missing/i);
+  });
+
+  it('should return error if given product have invalid price', () => {
+    const productWithoutName = { name: 'p1', price: -10 };
 
     const {
       success,
@@ -351,5 +378,29 @@ describe('createProduct', () => {
 
     expect(success).toBe(true);
     expect(message).toMatch(/success/i);
+  });
+});
+
+describe('isStrongPassword', () => {
+  const minLength = 8;
+
+  it('should return false when password is lower than min length', () => {
+    expect(isStrongPassword('a'.repeat(minLength - 1))).toBe(false);
+  });
+
+  it('should return false if given password does not contains at least one uppercase letter', () => {
+    expect(isStrongPassword('a'.repeat(minLength))).toBe(false);
+  });
+
+  it('should return false if given password does not contains at least one lowercase letter', () => {
+    expect(isStrongPassword('A'.repeat(minLength))).toBe(false);
+  });
+
+  it('should return false if given password does not contains at least one digit(number)', () => {
+    expect(isStrongPassword('a'.repeat(minLength) + 'A')).toBe(false);
+  });
+
+  it('should return true if given password is valid', () => {
+    expect(isStrongPassword('a'.repeat(minLength) + 'A' + '0')).toBe(true);
   });
 });
